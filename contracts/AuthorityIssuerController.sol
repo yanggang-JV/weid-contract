@@ -151,11 +151,11 @@ contract AuthorityIssuerController {
         return authorityIssuerData.getAddressFromName(name);
     }
 
-    function getIssuerCount() 
+    function getRecognizedIssuerCount() 
         public 
         constant 
         returns (uint) 
     {
-        return authorityIssuerData.getIssuerCount();
+        return authorityIssuerData.getRecognizedIssuerCount();
     }
 }

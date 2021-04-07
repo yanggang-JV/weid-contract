@@ -30,7 +30,8 @@ contract SpecificIssuerData {
     uint constant private RETURN_CODE_FAILURE_ALREADY_EXISTS = 500501;
     uint constant private RETURN_CODE_FAILURE_NOT_EXIST = 500502;
     uint constant private RETURN_CODE_FAILURE_EXCEED_MAX = 500503;
-    uint constant private RETURN_CODE_FAILURE_NO_PERMISSION = 500504;
+    uint constant private RETURN_CODE_FAILURE_NO_PERMISSION = 500000;
+    uint constant private RETURN_CODE_FAILURE_DEL_EXIST_ISSUER = 500504;
 
     struct IssuerType {
         // typeName as index, dynamic array as getAt function and mapping as search
@@ -61,6 +62,9 @@ contract SpecificIssuerData {
         if (!isIssuerTypeExist(typeName)) {
             return RETURN_CODE_FAILURE_NOT_EXIST;
         }
+        if (issuerTypeMap[typeName].fellow.length != 0) {
+            return RETURN_CODE_FAILURE_DEL_EXIST_ISSUER;
+        }
         if (issuerTypeMap[typeName].owner != tx.origin) {
             return RETURN_CODE_FAILURE_NO_PERMISSION;
         }
@@ -75,6 +79,7 @@ contract SpecificIssuerData {
             typeNameArray[index] = typeNameArray[datasetLength-1];
         }
         delete typeNameArray[datasetLength-1];
+        typeNameArray.length--;
         return RETURN_CODE_SUCCESS;
     }
 

@@ -141,14 +141,14 @@ contract SpecificIssuerController {
     )
         public
         constant
-        returns (bytes32[] typeNames, address[] owners, uint256[] createds, uint total)
+        returns (bytes32[] typeNames, address[] owners, uint256[] createds)
     {
         uint totalLength = specificIssuerData.getTypeNameSize();
 
         uint dataLength;
         // Calculate actual dataLength
         if (totalLength < startPos) {
-          return (new bytes32[](0), new address[](0), new uint256[](0), 0);
+          return (new bytes32[](0), new address[](0), new uint256[](0));
         } else if (totalLength <= startPos + num) {
           dataLength = totalLength - startPos;
         } else {
@@ -164,10 +164,19 @@ contract SpecificIssuerController {
           owners[index] = owner;
           createds[index] = created;
         }
-        return (typeNames, owners, createds, totalLength);
+        return (typeNames, owners, createds);
     }
 
-    function removeIssuerType(bytes32 typeName) public returns (uint) {
-      return specificIssuerData.removeIssuerType(typeName);
+    function removeIssuerType(bytes32 typeName) public {
+        uint result = specificIssuerData.removeIssuerType(typeName);
+        SpecificIssuerRetLog(OPERATION_REMOVE, result, typeName, 0x0);
+    }
+
+    function getIssuerTypeCount()
+        public
+        constant
+        returns (uint)
+    {
+        return specificIssuerData.getTypeNameSize();
     }
 }
