@@ -46,6 +46,7 @@ contract AuthorityIssuerData {
     mapping (address => AuthorityIssuer) private authorityIssuerMap;
     address[] private authorityIssuerArray;
     mapping (bytes32 => address) private uniqueNameMap;
+    uint issuerCount = 0;
 
     RoleController private roleController;
 
@@ -105,6 +106,7 @@ contract AuthorityIssuerData {
         }
         // Set role and flag
         roleController.addRole(addr, roleController.ROLE_AUTHORITY_ISSUER());
+        issuerCount = issuerCount + 1;
         authorityIssuerMap[addr].attribInt[15] = int(1);
         return RETURN_CODE_SUCCESS;
     }
@@ -115,6 +117,7 @@ contract AuthorityIssuerData {
         }
         // Remove role and flag
         roleController.removeRole(addr, roleController.ROLE_AUTHORITY_ISSUER());
+        issuerCount = issuerCount - 1;
         authorityIssuerMap[addr].attribInt[15] = int(0);
         return RETURN_CODE_SUCCESS;
     }
@@ -132,6 +135,7 @@ contract AuthorityIssuerData {
             return roleController.RETURN_CODE_FAILURE_NO_PERMISSION();
         }
         roleController.removeRole(addr, roleController.ROLE_AUTHORITY_ISSUER());
+        issuerCount = issuerCount - 1;
         uniqueNameMap[authorityIssuerMap[addr].attribBytes32[0]] = address(0x0);
         delete authorityIssuerMap[addr];
         uint datasetLength = authorityIssuerArray.length;
@@ -213,5 +217,13 @@ contract AuthorityIssuerData {
         returns (address)
     {
         return uniqueNameMap[name];
+    }
+
+    function getIssuerCount() 
+        public 
+        constant 
+        returns (uint) 
+    {
+        return issuerCount;
     }
 }
